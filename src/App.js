@@ -1,36 +1,58 @@
-import { Alchemy, Network } from 'alchemy-sdk';
-import { useEffect, useState } from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from 'react-router-dom';
 
+import Link from '@mui/material/Link';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
 import './App.css';
-
-// Refer to the README doc for more information about using API
-// keys in client-side code. You should never do this in production
-// level code.
-const settings = {
-  apiKey: process.env.REACT_APP_ALCHEMY_API_KEY,
-  network: Network.ETH_MAINNET,
-};
+import Account from './Account';
+import Home from './Home';
 
 
-// In this week's lessons we used ethers.js. Here we are using the
-// Alchemy SDK is an umbrella library with several different packages.
-//
-// You can read more about the packages here:
-//   https://docs.alchemy.com/reference/alchemy-sdk-api-surface-overview#api-surface
-const alchemy = new Alchemy(settings);
 
 function App() {
-  const [blockNumber, setBlockNumber] = useState();
-
-  useEffect(() => {
-    async function getBlockNumber() {
-      setBlockNumber(await alchemy.core.getBlockNumber());
-    }
-
-    getBlockNumber();
-  });
-
-  return <div className="App">Block Number: {blockNumber}</div>;
+  return (
+    <Router>
+      <AppBar
+        position="static"
+        color="default"
+        elevation={0}
+        sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
+      >
+        <Toolbar sx={{ flexWrap: 'wrap' }}>
+          <Typography variant="h6" color="inherit" noWrap sx={{mr: 5}}>
+            Ethereum Explorer
+          </Typography>
+          <nav>
+            <Link
+              variant="button"
+              color="text.primary"
+              href="/"
+              sx={{ my: 1, mx: 1.5 }}
+            >
+              VIEW BLOCK
+            </Link>
+            <Link
+              variant="button"
+              color="text.primary"
+              href="/account"
+              sx={{ my: 1, mx: 1.5 }}
+            >
+              VIEW ACCOUNT
+            </Link>
+          </nav>
+        </Toolbar>
+      </AppBar>
+      <Switch>
+        <Route path="/account/:address" children={<Account />} />
+        <Route path="/" children={<Home />}></Route>
+      </Switch>
+    </Router>
+  );
 }
 
 export default App;
